@@ -120,7 +120,7 @@ Click 'driver' and check the 'depth' box
 ```
 
 ### Train Object Recognition Algorithm
-* Adapted from http://wg-perception.github.io/ork_tutorials/tutorial01/tutorial.html#creating-an-object-in-the-db
+* Adapted from http://wg-perception.github.io/ork_tutorials/tutorial03/tutorial.html
 * **On Azure**
 
 ```
@@ -128,13 +128,14 @@ rosrun object_recognition_core object_add.py -n coke -d "A universal can of coke
 (Take note of the Object ID from the object)
 (coke.stl is included in this repository)
 rosrun object_recognition_core mesh_add.py YOUR_OBJECT_ID /path/to/coke.stl --commit
+rosrun object_recognition_core training -c `rospack find object_recognition_linemod`/conf/training.ork
 ```
         
 ### Start Object Recognition Algorithm
 * **On Azure**
 
 ```
-some command that starts it
+rosrun object_recognition_core detection -c  `rospack find object_recognition_linemod`/conf/detection.ros.ork
 ```
 
 ### Start Python Script that interfaces with the Arduinos
