@@ -6,9 +6,9 @@
 * Follow instructions @ instertroswebsitehere.com  
 * Install ROS Packages on **Local Computer**
 
-        sudo apt-get install ros-hydro-object-recognition*   
+        ```sudo apt-get install ros-hydro-object-recognition*   
         sudo apt-get install ros-hydro-openni*  
-        sudo apt-get install ros-hydro-freenect*
+        sudo apt-get install ros-hydro-freenect*```
 
 ### Setup OpenVPN and set ROS environment variables on Local Computer
 * Use **local computer browser** to connect to Azure at myazureinstance.azure.com:vpn_port  
