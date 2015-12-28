@@ -1,6 +1,10 @@
 ### Unfortunately, we can't ship you RecycleBot (yet).
 * Luckily, we can help you set one up on your own!
 
+
+![RecycleBot]
+(https://github.com/matthewblumberg/RecycleBot-Imagine-Cup/blob/master/bot.jpg?raw=true)
+
 Get the files you need at https://github.com/matthewblumberg/RecycleBot-Imagine-Cup
 (That's where this ReadMe file is meant to live anyway!)
 
