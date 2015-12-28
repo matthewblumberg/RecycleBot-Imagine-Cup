@@ -1,6 +1,9 @@
 ### Unfortunately, we can't ship you RecycleBot (yet).
 * Luckily, we can help you set one up on your own!
 
+Get the files you need at https://github.com/matthewblumberg/RecycleBot-Imagine-Cup
+(That's where this ReadMe file is meant to live anyway!)
+
 ### Install ROS and other dependencies
 * The local computer and Azure must both be running Ubuntu 12.04
 * Follow instructions @ instertroswebsitehere.com  
