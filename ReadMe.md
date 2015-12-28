@@ -1,22 +1,28 @@
-### Unfortunately, we can't ship you RecycleBot (yet).
+# Software Instructions:
+
+### Unfortunately, we can't ship you a RecycleBot (yet).
 * Luckily, we can help you set one up on your own!
 
 
 ![RecycleBot]
 (https://github.com/matthewblumberg/RecycleBot-Imagine-Cup/blob/master/bot.jpg?raw=true)
 
-Get the files you need at https://github.com/matthewblumberg/RecycleBot-Imagine-Cup
+For a better reading experience and to get the files you need, visit https://github.com/matthewblumberg/RecycleBot-Imagine-Cup
 (That's where this ReadMe file is meant to live anyway!)
 
 ### Install ROS and other dependencies
 * The local computer and Azure must both be running Ubuntu 12.04
-* Follow instructions @ instertroswebsitehere.com  
+* Follow instructions  at 
 * Install ROS Packages on **Local Computer**
 
-```
-sudo apt-get install ros-hydro-object-recognition*   
+```  
 sudo apt-get install ros-hydro-openni*  
 sudo apt-get install ros-hydro-freenect*
+```
+* Install ROS Packages on **Azure**
+
+```
+sudo apt-get install ros-hydro-object-recognition* 
 ```
 
 ### Setup OpenVPN on Azure
@@ -153,6 +159,7 @@ rosrun object_recognition_core detection -c  `rospack find object_recognition_li
 cd /catkin_ws/devel
 source setup.bash
 rosrun beginner_tutorials listener.py
+Note: sometimes there's a bug that makes it necessary to open the Serial Monitor in Arduino for the door sensor to work.
 ```
 
 ###Visualization
