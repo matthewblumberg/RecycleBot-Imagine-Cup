@@ -143,6 +143,8 @@ rosrun object_recognition_core detection -c  `rospack find object_recognition_li
 * **On local computer**  
 
 ```
+cd /catkin_ws/devel
+source setup.bash
 rosrun beginner_tutorials listener.py
 ```
 
