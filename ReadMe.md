@@ -24,10 +24,10 @@ sudo openvpn --config myprofile.ovpn  
 
 * Find **Azure and Local Computer's** IP addresses on the VPN
 
-    * On each computer run `hostname -I`
-    * One of the results should have the first 3 numbers in common, with a slightly different 4th number.
-    *     E.g. `192.192.19.0` and `192.192.19.1`  
-    * Take note of these numbers for the next step.
+  * On each computer run `hostname -I`
+  * One of the results should have the first 3 numbers in common, with a slightly different 4th number.
+  *     E.g. `192.192.19.0` and `192.192.19.1`  
+  * Take note of these numbers for the next step.
 
 
 
@@ -73,7 +73,7 @@ roscore&
 ```
 
 * You should now see `ros-agg` and `ros-output` when you run `rostopic list` on the local computer.  This means that ROS topics are able to communicate between the local computer and Azure
-        
+
 ### Start Freenect driver on the local computer
 * The Freenect driver reads data from the Kinect and makes it available to ROS, including Azure.
 * **On local computer**
@@ -102,6 +102,6 @@ rosrun beginner_tutorials listener.py
 ###Visualization
 *    Optionally you can start rviz to visualize RecycleBot using `rosrun rviz rviz`
 
-*    Add PointCloud2
-*    Add ORK_Object
-*    
+  *    Add PointCloud2
+  *    Add ORK_Object
+  *    
