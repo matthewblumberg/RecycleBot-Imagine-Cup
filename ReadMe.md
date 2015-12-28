@@ -93,7 +93,7 @@ roscore&
 * Follow the instructions at http://wiki.ros.org/ROS/Tutorials/CreatingPackage to create your catkin workspace
 * Next, follow the instructions at http://wiki.ros.org/ROS/Tutorials/WritingPublisherSubscriber(python)
 * Last, replace the python file at /catkin_ws/scripts/listener.py with the listener.py in this repository
-* Be sure to replace the `/dev/cu.usbmodem` or `/dev/cu.usbmodem*****` addresses on lines 16 and 17 with the correct addresses for your local computer
+* Be sure to replace the `/dev/cu.usbmodem` or `/dev/cu.usbmodem*****` addresses on lines 16 and 17 with the correct addresses for the Arduinos on your local computer
 
 
 
@@ -114,8 +114,20 @@ Click 'driver' and check the 'depth' box
 
 ```
 roslaunch freenect_launch freenect.launch
+(Then in a new tab)
 rosrun rqt_reconfigure rqt_reconfigure
 Click 'driver' and check the 'depth' box
+```
+
+### Train Object Recognition Algorithm
+* Adapted from http://wg-perception.github.io/ork_tutorials/tutorial01/tutorial.html#creating-an-object-in-the-db
+* **On Azure**
+
+```
+rosrun object_recognition_core object_add.py -n coke -d "A universal can of coke"
+(Take note of the Object ID from the object)
+(coke.stl is included in this repository)
+rosrun object_recognition_core mesh_add.py YOUR_OBJECT_ID /path/to/coke.stl --commit
 ```
         
 ### Start Object Recognition Algorithm
@@ -126,7 +138,7 @@ some command that starts it
 ```
 
 ### Start Python Script that interfaces with the Arduinos
-* This script is where the heart of the logic lives.  It checks if the door is open, listens for any recyclable recognition from Azure, and tells RecycleBot's Arduinos which way to turn. 
+* This script is where the heart of the logic lives.  It checks if the door is open, listens for any recyclable recognition from Azure, and tells RecycleBot's Arduinos which way to turn and how to do it.
 * **On local computer**  
 
 ```
