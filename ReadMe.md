@@ -85,7 +85,7 @@ roscore&
 * The solenoids act as a sort of braking system to stop the platform from moving due to the weight of an object.
 * See the fritzing diagram below:
 ![Fritzing Diagram]
-(https://github.com/matthewblumberg/RecycleBot-Imagine-Cup/fritz.png)
+(https://github.com/matthewblumberg/RecycleBot-Imagine-Cup/blob/master/fritz.png?raw=true)
 
 
 ### Setup listener.py
