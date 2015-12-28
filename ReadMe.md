@@ -23,6 +23,7 @@ sudo openvpn --config myprofile.ovpn  
 ```
 
 * Find **Azure and Local Computer's** IP addresses on the VPN
+
     * On each computer run `hostname -I`
     * One of the results should have the first 3 numbers in common, with a slightly different 4th number.
     *     E.g. `192.192.19.0` and `192.192.19.1`  
@@ -100,6 +101,7 @@ rosrun beginner_tutorials listener.py
 
 ###Visualization
 *    Optionally you can start rviz to visualize RecycleBot using `rosrun rviz rviz`
+
 *    Add PointCloud2
 *    Add ORK_Object
 *    
