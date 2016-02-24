@@ -4,8 +4,7 @@
 * Luckily, we can help you set one up on your own!
 
 
-![RecycleBot]
-(https://github.com/matthewblumberg/RecycleBot-Imagine-Cup/blob/master/bot.jpg?raw=true)
+![RecycleBot](bot.JPG)
 
 For a better reading experience and to get the files you need, visit https://github.com/matthewblumberg/RecycleBot-Imagine-Cup
 (That's where this ReadMe file is meant to live anyway!)
