@@ -3,6 +3,11 @@
 ### Unfortunately, we can't ship you a RecycleBot (yet).
 * Luckily, we can help you set one up on your own!
 
+### Notes
+* This app requires a Kinect, Arduinos, a magnetic door sensor, an internet connection, and Azure.
+* The Azure instance running this software is located at matthewblumberg.cloudapp.net but will run out of credit soon.
+* Unfortunately, due to the size of point cloud files and complexity of an ROS network, a simulated data flow is not possible to write or provide.  Such an endeavor would require writing an entire simulated Kinect camera, which is not possible at this time.
+
 
 ![RecycleBot](bot.JPG)
 
