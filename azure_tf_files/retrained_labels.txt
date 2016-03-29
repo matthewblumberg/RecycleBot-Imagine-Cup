@@ -1,0 +1,10 @@
+beer bottle
+plastic cup
+coffee sleeve
+water bottle
+soda can
+other
+soda bottle
+greenstripe cold cup
+coffee lid
+wine bottle

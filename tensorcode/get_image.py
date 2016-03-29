@@ -6,7 +6,7 @@ import os
 import time
 import serial
 
-ser = serial.Serial('/dev/ttyACM0', 9600)
+# ser = serial.Serial('/dev/ttyACM0', 9600)
 recyclable_labels = ["bottle"]
 pygame.camera.init()
 cam = pygame.camera.Camera(pygame.camera.list_cameras()[1])
@@ -46,4 +46,4 @@ def analyze_picture():
 #pygame.camera.quit()
 # a = analyze_picture()
 
-main_loop()
+# main_loop()
