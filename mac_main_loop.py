@@ -12,18 +12,47 @@ import struct
 # ser = serial.Serial('/dev/cu.usbmodemfd1221', 9600)
 # ser_two = serial.Serial('/dev/cu.usbmodemfd1211', 9600)
 
-boops_arduino = '/dev/cu.usbmodemfd1221'
-motor_arduino = '/dev/cu.usbmodemfd1211'
+arduino_directory = "/dev"
+arduino_prefix = "cu.usbmodemf*"
+
+
+proc=subprocess.Popen('ls {0} | grep {1}'.format(arduino_directory, arduino_prefix), shell=True, stdout=subprocess.PIPE, )
+response=proc.communicate()[0]
+response = response.split("\n")[:-1]
+response = [arduino_directory + "/" + item for item in response]
+
+# boops_arduino = '/dev/cu.usbmodemfd1221'
+# motor_arduino = '/dev/cu.usbmodemfd1211'
+# ser = serial.Serial(boops_arduino, 9600)
+running_on_mac = True
+
+def identify_arduinos():
+	first_responses = []
+	second_responses = []
+	i = 5
+	first_ser = serial.Serial(response[0], 9600)
+	try:
+		arduino_responses.append(int(first_ser.readline()[0]))
+	except:
+		second_ser = serial.Serial(response[1], 9600)
+		try:
+			second_responses.append(int(second_ser.readline()[0]))
+		except:
+			print "fuck"
+	i-=1
+	print i
+	first_ser.close()
+	second_ser.close()
+	if len(first_responses) > 0:
+		return response[0], response[1]
+	elif len(second_responses):
+		return response[1], response[0]
+	else:
+		time.sleep(1)
+		return identify_arduinos()
+
+boops_arduino, motor_arduino = identify_arduinos()
 ser = serial.Serial(boops_arduino, 9600)
-
-
-
-
-
-
-# pygame.camera.init()
-# cam = pygame.camera.Camera(pygame.camera.list_cameras()[0])
-
 
 def open_left():
     ser.write(struct.pack(">B", 101))
@@ -108,28 +137,12 @@ def read_door():
 	try:
 		return int(ser.readline()[0])
 	except:
+		print "arduino not ready yet"
 		time.sleep(1)
 		return read_door()
 
 
-def main_loop():
-	while True:
-		try:
-			door_open = int(ser.readline()[0])
-			door_open = int(ser.readline()[0])
-		except:
-			print "arduino not ready yet"
-		door_open = int(ser.readline()[0])
-		if door_open:
-			print "opened"
-			while door_open:
-				door_open = int(ser.readline()[0])
-			print "testing"
-			test_roundtrip
-
 def take_picture():
-	cam.start()
-	img = cam.get_image()
 	current = datetime.datetime.now()
 	timestamp = []
 	timestamp.append(str(current.year))
@@ -139,19 +152,43 @@ def take_picture():
 	timestamp.append(str(current.minute))
 	timestamp.append(str(current.second))
 	timestamp = "_".join(timestamp)
-	pygame.image.save(img, "photo_{0}.bmp".format(timestamp))
-	os.system("convert photo_{0}.bmp photo_{1}.jpg".format(timestamp, timestamp))
-	cam.stop()
+	if not running_on_mac:
+		cam.start()
+		img = cam.get_image()
+		pygame.image.save(img, "photo_{0}.bmp".format(timestamp))
+		os.system("convert photo_{0}.bmp photo_{1}.jpg".format(timestamp, timestamp))
+		cam.stop()
+	elif running_on_mac:
+		os.system("cp coke.jpg photo_{0}.jpg".format(timestamp))
 	return timestamp
 
 def send_picture(timestamp):
 	proc=subprocess.Popen('tar -c photo_{0}.jpg | ssh ubuntu@40.122.47.160 "tar -x -C tf_files/"'.format(timestamp), shell=True, stdout=subprocess.PIPE, )
 	proc.communicate()
+
 def get_results(timestamp):
 	proc=subprocess.Popen('ssh ubuntu@40.122.47.160 "cat tf_files/log.txt"', shell=True, stdout=subprocess.PIPE, )
 	response=proc.communicate()[0]
 	print response
 	return response
+
+
+
+def main_loop():
+	while True:
+		try:
+			door_open = read_door()
+		except:
+			print "arduino not ready yet"
+			door_open=read_door()
+		if door_open:
+			print "opened"
+			while door_open:
+				door_open = read_door()
+			print "door closed"
+			roundtrip()
+			print "ready"
+
 
 def roundtrip():
 	timestamp = take_picture()
@@ -169,7 +206,7 @@ def local_roundtrip():
 
 
 def test_roundtrip():
-	proc=subprocess.Popen('tar -c coke.jpg | ssh ubuntu@40.122.47.160 "tar -x -C tf_files/"'.format(timestamp), shell=True, stdout=subprocess.PIPE, )
+	proc=subprocess.Popen('tar -c coke.jpg | ssh ubuntu@40.122.47.160 "tar -x -C tf_files/"', shell=True, stdout=subprocess.PIPE, )
 	proc.communicate()
 	print "sent picture"
 	time.sleep(3)
@@ -179,6 +216,3 @@ def test_roundtrip():
 		dump_left()
 	else:
 		dump_right()
-
-
-main_loop()
