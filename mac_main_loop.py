@@ -1,4 +1,4 @@
-# import pygame.camera
+import pygame.camera
 import pygame.image
 import sys
 import os
@@ -8,12 +8,17 @@ import subprocess
 import datetime
 import struct
 
+pygame.camera.init()
+cam = pygame.camera.Camera(pygame.camera.list_cameras()[1])
+
+running_locally = True
+
 # ser = serial.Serial('/dev/ttyACM0', 9600)
 # ser = serial.Serial('/dev/cu.usbmodemfd1221', 9600)
 # ser_two = serial.Serial('/dev/cu.usbmodemfd1211', 9600)
 
 arduino_directory = "/dev"
-arduino_prefix = "cu.usbmodemf*"
+arduino_prefix = "ttyACM*"
 
 
 proc=subprocess.Popen('ls {0} | grep {1}'.format(arduino_directory, arduino_prefix), shell=True, stdout=subprocess.PIPE, )
@@ -24,15 +29,16 @@ response = [arduino_directory + "/" + item for item in response]
 # boops_arduino = '/dev/cu.usbmodemfd1221'
 # motor_arduino = '/dev/cu.usbmodemfd1211'
 # ser = serial.Serial(boops_arduino, 9600)
-running_on_mac = True
+running_on_mac = False
 
 def identify_arduinos():
 	first_responses = []
 	second_responses = []
 	i = 5
 	first_ser = serial.Serial(response[0], 9600)
+	time.sleep(1)
 	try:
-		arduino_responses.append(int(first_ser.readline()[0]))
+		first_responses.append(int(first_ser.readline()[0]))
 	except:
 		second_ser = serial.Serial(response[1], 9600)
 		try:
@@ -41,18 +47,29 @@ def identify_arduinos():
 			print "fuck"
 	i-=1
 	print i
-	first_ser.close()
-	second_ser.close()
-	if len(first_responses) > 0:
+	# first_ser.close()
+	if len(first_responses) > 0:	
+		# return first_ser, response[1]
 		return response[0], response[1]
 	elif len(second_responses):
+		first_ser.close()
+		# return second_ser, response[0]
 		return response[1], response[0]
+
 	else:
 		time.sleep(1)
+		first_ser.close()
+		second_ser.close()
 		return identify_arduinos()
 
 boops_arduino, motor_arduino = identify_arduinos()
-ser = serial.Serial(boops_arduino, 9600)
+
+# boops_arduino, motor_arduino = response[0], response[1]
+# boops_arduino = response[0]
+ser = serial.Serial(boops_arduino, 9600, writeTimeout=0)
+
+
+# ser, motor_arduino = identify_arduinos()
 
 def open_left():
     ser.write(struct.pack(">B", 101))
@@ -83,6 +100,7 @@ def reset_motor(ser_two):
 
 
 def dump_left():
+	ser = serial.Serial(boops_arduino, 9600)
 	ser_two = serial.Serial(motor_arduino, 9600)
 	time.sleep(1)
 	open_left()
@@ -92,6 +110,16 @@ def dump_left():
 	turn_left(ser_two)
 	time.sleep(1)
 	turn_left(ser_two)
+	time.sleep(1)
+	turn_left(ser_two)
+	time.sleep(1)
+	turn_left(ser_two)
+	time.sleep(1)
+	turn_left(ser_two)
+	time.sleep(1)
+	turn_right(ser_two)
+	time.sleep(1)
+	turn_right(ser_two)
 	time.sleep(1)
 	turn_right(ser_two)
 	time.sleep(1)
@@ -109,6 +137,7 @@ def dump_left():
 
 
 def dump_right():
+	ser = serial.Serial(boops_arduino, 9600)
 	ser_two = serial.Serial(motor_arduino, 9600)
 	time.sleep(1)
 	open_right()
@@ -118,6 +147,16 @@ def dump_right():
 	turn_right(ser_two)
 	time.sleep(1)
 	turn_right(ser_two)
+	time.sleep(1)	
+	turn_right(ser_two)
+	time.sleep(1)
+	turn_right(ser_two)
+	time.sleep(1)
+	turn_right(ser_two)
+	time.sleep(1)
+	turn_left(ser_two)
+	time.sleep(1)
+	turn_left(ser_two)
 	time.sleep(1)
 	turn_left(ser_two)
 	time.sleep(1)
@@ -152,14 +191,20 @@ def take_picture():
 	timestamp.append(str(current.minute))
 	timestamp.append(str(current.second))
 	timestamp = "_".join(timestamp)
-	if not running_on_mac:
+	if not running_on_mac and not running_locally:
 		cam.start()
 		img = cam.get_image()
 		pygame.image.save(img, "photo_{0}.bmp".format(timestamp))
 		os.system("convert photo_{0}.bmp photo_{1}.jpg".format(timestamp, timestamp))
 		cam.stop()
-	elif running_on_mac:
-		os.system("cp coke.jpg photo_{0}.jpg".format(timestamp))
+	elif running_locally:
+		cam.start()
+		img = cam.get_image()
+		pygame.image.save(img, "tf_files/photo_{0}.bmp".format(timestamp))
+		os.system("convert tf_files/photo_{0}.bmp tf_files/photo_{1}.jpg".format(timestamp, timestamp))
+		cam.stop()
+	# elif running_on_mac:
+	# 	os.system("cp coke.jpg photo_{0}.jpg".format(timestamp))
 	return timestamp
 
 def send_picture(timestamp):
@@ -167,8 +212,12 @@ def send_picture(timestamp):
 	proc.communicate()
 
 def get_results(timestamp):
-	proc=subprocess.Popen('ssh ubuntu@40.122.47.160 "cat tf_files/log.txt"', shell=True, stdout=subprocess.PIPE, )
-	response=proc.communicate()[0]
+	if not running_locally:
+		proc=subprocess.Popen('ssh ubuntu@40.122.47.160 "cat tf_files/log.txt"', shell=True, stdout=subprocess.PIPE, )
+		response=proc.communicate()[0]
+	else:
+		proc = subprocess.Popen('cat ./tf_files/log.txt', shell=True, stdout=subprocess.PIPE, )
+		response = proc.communicate()[0]
 	print response
 	return response
 
@@ -187,12 +236,14 @@ def main_loop():
 				door_open = read_door()
 			print "door closed"
 			roundtrip()
+			ser = serial.Serial(boops_arduino, 9600)
 			print "ready"
 
 
 def roundtrip():
 	timestamp = take_picture()
-	send_picture(timestamp)
+	if not running_locally:
+		send_picture(timestamp)
 	time.sleep(3)
 	result = get_results(timestamp)
 	if result[:-1] == "recyclable":
