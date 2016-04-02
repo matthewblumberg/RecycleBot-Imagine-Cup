@@ -53,13 +53,13 @@ import time
 
 node_to_class = {}
 node_to_class[0] = "beer bottle"
-node_to_class[1] = "plastic cup"
-node_to_class[2] = "coffee sleeve"
-node_to_class[3] = "water bottle"
-node_to_class[4] = "soda can"
+node_to_class[1] = "bar"
+node_to_class[2] = "plastic bottle"
+node_to_class[3] = "odwalla"
+node_to_class[4] = "bag"
 node_to_class[5] = "other"
-node_to_class[6] = "soda bottle"
-node_to_class[7] = "greenstripe cold cup"
+node_to_class[6] = "can"
+node_to_class[7] = "empty"
 node_to_class[8] = "coffee lid"
 node_to_class[9] = "wine bottle"
 
@@ -87,7 +87,7 @@ def create_graph():
   # Creates graph from saved graph_def.pb.
   # with tf.gfile.FastGFile(os.path.join(
   #     FLAGS.model_dir, 'classify_image_graph_def.pb'), 'rb') as f:
-  with tf.gfile.FastGFile("retrained_graph.pb", 'rb') as f:
+  with tf.gfile.FastGFile("retrained_graph1.pb", 'rb') as f:
     graph_def = tf.GraphDef()
     graph_def.ParseFromString(f.read())
     _ = tf.import_graph_def(graph_def, name='')
@@ -140,8 +140,27 @@ def run_inference_on_image(image):
       human_string = node_to_class[node_id]
       score = predictions[node_id]
       print('%s (score = %.5f)' % (human_string, score))
-    if predictions[5] <= 0.27:
-      print("A recyclable was detected!")
+    maxNum = 0
+    max_index = 100
+    # threshold = max([x for x in predictions if x != 5])
+    for i in range(len(predictions)):
+      if predictions[i] > maxNum and i not in [1, 4, 5, 7]:
+        maxNum = predictions[i]
+        max_index = i
+    print(maxNum)
+    #beer bottle
+    if max_index == 0 and maxNum >= 0.65:
+      log_recyclable()
+    #plastic bottle
+    elif max_index == 2 and maxNum >=0.5:
+      log_recyclable()
+    #odwalla
+    elif max_index == 3 and maxNum >=0.4:
+      log_recyclable()
+    #can
+    elif max_index == 6 and maxNum >=0.9:
+      log_recyclable()
+    elif maxNum >= 0.90:
       log_recyclable()
     else:
       log_trash()
